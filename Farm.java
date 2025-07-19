@@ -11,7 +11,7 @@ import java.awt.*;
 import java.util.Scanner;
 import java.awt.event.*;
 
-public class Farm extends JFrame
+public class Farm extends JFrame implements MouseListener
 {
     //Declarations
     JMenuBar menuBar;
@@ -34,11 +34,20 @@ public class Farm extends JFrame
     String tileUnclickedFilePath = "Images/Unclicked.png";
     ImageIcon tileUnclicked = new ImageIcon(tileUnclickedFilePath);
 
+    String tileClickedFilePath = "Images/Clicked.png";
+    ImageIcon tileClicked = new ImageIcon(tileClickedFilePath);
+
+    String sheepFilePath = "Images/Sheep.png";
+    ImageIcon sheep = new ImageIcon(sheepFilePath);
+
     //Integers
     int xPos = 0;
     int yPos = 0;
     int columnID = 0;
     int rowID = 0;
+
+    //Arrays
+    boolean[][] clicked = new boolean [ROWS][COLUMNS]; 
     public Farm()
     {
         setTitle(WINDOWNAME);
@@ -48,10 +57,42 @@ public class Farm extends JFrame
         this.toFront();
         this.setVisible(true);
 
+        addMouseListener(this);
+
         JPanel panel = new JPanel();
         panel.setPreferredSize(new Dimension(WIDTH,HEIGHT));
         myGraphic = new Canvas();
         panel.add(myGraphic);
+    }
+
+    public void mouseExited(MouseEvent e){
+        System.out.println("exit");
+    }
+
+    public void mouseEntered(MouseEvent e){
+        System.out.println("enter");
+    }
+
+    public void mouseReleased(MouseEvent e){
+        System.out.println("release");
+    }
+
+    public void mousePressed(MouseEvent e){
+        System.out.println("press");
+    }
+
+    public void mouseClicked(MouseEvent e){
+        int mouseX=e.getX();
+        int mouseY=e.getY();
+        System.out.println("click at "+mouseX+", "+mouseY);
+
+        getColumnID(mouseX);
+        getRowID(mouseY);
+        System.out.println(columnID);
+        System.out.println(rowID);
+        System.out.println(ROWS);
+            clicked[columnID][rowID] = true; 
+        repaint();
     }
 
     public int getXPosition(int X){
@@ -78,13 +119,17 @@ public class Farm extends JFrame
         super.paint(g);
         xPos = XOFFSET;
         yPos = YOFFSET;
-        for(int y=0;y<COLUMNS;y++){
-            for(int x=0;x<ROWS;x++){
-                tileUnclicked.paintIcon(this,g,xPos,yPos);
+        for (int y=0; y<COLUMNS;y++){
+            for (int x=0; x<ROWS;x++){
+                if(x == 2 && y == 2){
+                    sheep.paintIcon(this,g,xPos,yPos);
+                }else{
+                    tileUnclicked.paintIcon(this,g,xPos,yPos);
+                }
                 xPos = xPos + TILEWIDTH;
             }
             yPos = yPos + TILEHEIGHT;
+            xPos = 0;
         }
-
     }
 }
