@@ -1,9 +1,9 @@
 
 /**
- * The farm level for the game.
+ * Write a description of class Farm here.
  *
- * @author Owen J
- * @version 1
+ * @author (your name)
+ * @version (a version number or a date)
  */
 
 import javax.swing.*;
@@ -45,11 +45,25 @@ public class Farm extends JFrame implements MouseListener
     int yPos = 0;
     int columnID = 0;
     int rowID = 0;
+    int animalX = (int)(Math.random() * COLUMNS);
+    int animalY = (int)(Math.random() * ROWS);
+    int animals = 0;
 
     //Arrays
-    boolean[][] clicked = new boolean [ROWS][COLUMNS]; 
-    public Farm()
-    {
+    boolean[][] clicked = new boolean [ROWS][COLUMNS];
+    boolean[][] animal = new boolean [ROWS][COLUMNS];
+    public Farm(){
+        while (animals > 10){
+            if(animal[animalX][animalY] == true){
+                animalX = (int)(Math.random() * COLUMNS);
+                animalY = (int)(Math.random() * ROWS);         
+            }else{
+                animal[animalX][animalY] = true;
+                animalX = (int)(Math.random() * COLUMNS);
+                animalY = (int)(Math.random() * ROWS); 
+            }
+        }
+
         setTitle(WINDOWNAME);
         this.getContentPane().setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -91,13 +105,16 @@ public class Farm extends JFrame implements MouseListener
         System.out.println(columnID);
         System.out.println(rowID);
         System.out.println(ROWS);
+        if(mouseX <= (TILEWIDTH * COLUMNS) && mouseY <= (TILEHEIGHT * ROWS)
+        && mouseX >= XOFFSET && mouseY >= YOFFSET){
             clicked[columnID][rowID] = true; 
+        }
         repaint();
     }
 
-    public int getXPosition(int X){
-        X = (columnID * TILEWIDTH) + XOFFSET;
-        return X;
+    public int getXPosition(int mouseX){
+        mouseX = (columnID * TILEWIDTH) + XOFFSET;
+        return mouseX;
     }
 
     public int getColumnID(int xPosition){
@@ -105,9 +122,9 @@ public class Farm extends JFrame implements MouseListener
         return columnID;
     }
 
-    public int getYPosition(int Y){
-        Y = (rowID * TILEWIDTH) + YOFFSET;
-        return Y;
+    public int getYPosition(int mouseY){
+        mouseY = (rowID * TILEWIDTH) + YOFFSET;
+        return mouseY;
     }
 
     public int getRowID(int yPosition){
@@ -121,8 +138,10 @@ public class Farm extends JFrame implements MouseListener
         yPos = YOFFSET;
         for (int y=0; y<COLUMNS;y++){
             for (int x=0; x<ROWS;x++){
-                if(x == 2 && y == 2){
+                if(animal[animalX][animalY] == true && clicked[x][y] == true){
                     sheep.paintIcon(this,g,xPos,yPos);
+                }else if(clicked[x][y] == true){
+                    tileClicked.paintIcon(this,g,xPos,yPos);
                 }else{
                     tileUnclicked.paintIcon(this,g,xPos,yPos);
                 }
